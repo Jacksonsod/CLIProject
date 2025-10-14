@@ -2,6 +2,8 @@ import java.util.*;
 import user.*;
 
 public class Main {
+
+    // User management by jackson
     private static final String DEFAULT_USER = "admin";
     private static final String DEFAULT_PASS = "123";
 
@@ -36,5 +38,88 @@ public class Main {
                 System.out.println("Unknown command. Try: login, logout, create user, delete user, list users, switch user, exit");
             }
         }
+
+
+        // End by here user management
+
+
+
+
+
+
+
+
+
+
+
+
+        // Directory & File Operations by Laetitia
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // End Directory & File Operations By here
+
+
+        // System Control & Utilities by Imena kenny
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // End System Control & Utilities by here
+
+
+        // Monitoring & Diagnostics by Patrick
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // End Monitoring & Diagnostics by here
+
+
+        // Help & Learning by Angella
+
+
+
+
+
+
+
+
+
+
+
+        // End Help & Learning by here
     }
 }
