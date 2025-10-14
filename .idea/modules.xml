@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/CLI/CLI.iml" filepath="$PROJECT_DIR$/CLI/CLI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/CLIProject.iml" filepath="$PROJECT_DIR$/.idea/CLIProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/imena kenny/imena kenny.iml" filepath="$PROJECT_DIR$/imena kenny/imena kenny.iml" />
+    </modules>
+  </component>
+</project>
