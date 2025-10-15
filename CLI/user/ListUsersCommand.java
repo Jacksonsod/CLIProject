@@ -1,12 +1,17 @@
 package user;
 
-import java.util.Map;
+import java.util.List;
 
 public class ListUsersCommand {
-    public static void execute(Map<String, String> users) {
+    public static void execute(List<User> users) {
+        if (users.isEmpty()) {
+            System.out.println("No users registered.");
+            return;
+        }
+
         System.out.println("Registered Users:");
-        for (String user : users.keySet()) {
-            System.out.println("- " + user);
+        for (User u : users) {
+            System.out.println("- " + u.getUsername());
         }
     }
 }
