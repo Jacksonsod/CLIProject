@@ -5,14 +5,11 @@ public class Main {
 
     // User management by jackson
     private static final String DEFAULT_USER = "admin";
-    private static final String DEFAULT_PASS = "123";
-
-    private static Map<String, String> users = new HashMap<>();
-    private static String[] activeUser = { null };
-    private static Scanner scanner = new Scanner(System.in);
+    private static final List<User> users = new ArrayList<>();
+    private static final String[] activeUser = { null };
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        users.put(DEFAULT_USER, DEFAULT_PASS);
         System.out.println("Welcome to CLI User Manager");
 
         while (true) {
@@ -32,10 +29,10 @@ public class Main {
             } else if (input.startsWith("switch user ")) {
                 SwitchUserCommand.execute(input.substring(12), users, activeUser);
             } else if (input.equals("exit")) {
-                System.out.println("Goodbye! " + DEFAULT_USER);
+                System.out.println("Goodbye!");
                 return;
             } else {
-                System.out.println("Unknown command. Try: login, logout, create user, delete user, list users, switch user, exit");
+                System.out.println("Unknown command.\nTry: login, logout, create user, delete user, list users, switch user, exit");
             }
         }
 
