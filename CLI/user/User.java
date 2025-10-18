@@ -1,12 +1,22 @@
 package user;
 
-public class User {
-    private String username;
-    private String password;
+import java.util.Date;
 
-    public User(String username, String password) {
+public class User {
+    private int userId;
+    private String username;
+    private String passwordHash;
+    private String role;
+    private String status;
+    private Date createdAt;
+
+    public User(int userId, String username, String passwordHash, String role, String status, Date createdAt) {
+        this.userId = userId;
         this.username = username;
-        this.password = password;
+        this.passwordHash = passwordHash;
+        this.role = role;
+        this.status = status;
+        this.createdAt = createdAt;
     }
 
     public String getUsername() {
@@ -14,6 +24,14 @@ public class User {
     }
 
     public boolean checkPassword(String inputPassword) {
-        return password.equals(inputPassword);
+        return passwordHash.equals(inputPassword); // Replace with hash comparison later
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

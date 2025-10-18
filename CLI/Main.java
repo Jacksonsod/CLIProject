@@ -1,40 +1,76 @@
-import java.util.*;
+import java.util.Scanner;
+import db.UserRepository;
 import user.*;
+
 
 public class Main {
 
     // User management by jackson
-    private static final String DEFAULT_USER = "admin";
-    private static final List<User> users = new ArrayList<>();
     private static final String[] activeUser = { null };
     private static final Scanner scanner = new Scanner(System.in);
+    private static final UserRepository repo = new UserRepository();
 
-    public static void main(String[] args) {
-        System.out.println("Welcome to CLI User Manager");
+
+    public static void main(String[] args) 
+    {
+         System.out.println("Booting CLI User Manager");
+        System.out.println("Please create a user and log in.");
+
+        while (activeUser[0] == null) {
+            System.out.print("setup> ");
+            String input = scanner.nextLine().trim().toLowerCase();
+
+            if (input.startsWith("create user ")) {
+                CreateUserCommand.execute(input.substring(12), repo);
+            } else if (input.startsWith("login ")) {
+                LoginCommand.execute(input.substring(6), repo, activeUser);
+            } else {
+                System.out.println("Available commands: create user username:password, login username:password");
+            }
+        }
+
+        System.out.println("Welcome, " + activeUser[0]);
 
         while (true) {
             System.out.print("> ");
             String input = scanner.nextLine().trim().toLowerCase();
 
-            if (input.startsWith("login ")) {
-                LoginCommand.execute(input.substring(6), users, activeUser);
-            } else if (input.equals("logout")) {
+            if (input.equals("logout")) {
                 LogoutCommand.execute(activeUser);
-            } else if (input.startsWith("create user ")) {
-                CreateUserCommand.execute(input.substring(12), users);
+                System.out.println("Session ended. Please log in again.");
+                while (activeUser[0] == null) {
+                    System.out.print("login> ");
+                    input = scanner.nextLine().trim().toLowerCase();
+                    if (input.startsWith("login ")) {
+                        LoginCommand.execute(input.substring(6), repo, activeUser);
+                    } else {
+                        System.out.println("You must log in first using: login username:password");
+                    }
+                }
+                System.out.println("Welcome back, " + activeUser[0]);
+                continue;
+                }
+
+            if (input.startsWith("create user ")) {
+                CreateUserCommand.execute(input.substring(12), repo);
             } else if (input.startsWith("delete user ")) {
-                DeleteUserCommand.execute(input.substring(12), users, activeUser);
+                DeleteUserCommand.execute(input.substring(12), repo, activeUser);
             } else if (input.equals("list users")) {
-                ListUsersCommand.execute(users);
+                ListUsersCommand.execute(repo);
             } else if (input.startsWith("switch user ")) {
-                SwitchUserCommand.execute(input.substring(12), users, activeUser);
+                SwitchUserCommand.execute(input.substring(12), repo, activeUser);
             } else if (input.equals("exit")) {
-                System.out.println("Goodbye!");
+                System.out.println("Goodbye.");
                 return;
             } else {
-                System.out.println("Unknown command.\nTry: login, logout, create user, delete user, list users, switch user, exit");
+                System.out.println("Unknown command.\nTry: create user, delete user, list users, switch user, logout, exit");
             }
         }
+
+
+  
+    }
+    
 
 
         // End by here user management
@@ -119,4 +155,3 @@ public class Main {
 
         // End Help & Learning by here
     }
-}
