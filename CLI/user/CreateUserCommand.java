@@ -1,9 +1,9 @@
 package user;
 
-import java.util.List;
+import db.UserRepository;
 
 public class CreateUserCommand {
-    public static void execute(String input, List<User> userList) {
+    public static void execute(String input, UserRepository repo) {
         String[] creds = input.split(":");
         if (creds.length != 2) {
             System.out.println("Use format: create user username:password");
@@ -13,14 +13,12 @@ public class CreateUserCommand {
         String username = creds[0];
         String password = creds[1];
 
-        for (User u : userList) {
-            if (u.getUsername().equals(username)) {
-                System.out.println("User already exists.");
-                return;
-            }
+        if (repo.findUser(username) != null) {
+            System.out.println("User already exists.");
+        } else if (repo.createUser(username, password)) {
+            System.out.println("User created: " + username);
+        } else {
+            System.out.println("User creation failed.");
         }
-
-        userList.add(new User(username, password));
-        System.out.println("User created: " + username);
     }
 }
