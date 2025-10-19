@@ -59,7 +59,21 @@ public class Main {
                 ListUsersCommand.execute(repo);
             } else if (input.startsWith("switch user ")) {
                 SwitchUserCommand.execute(input.substring(12), repo, activeUser);
-            } else if (input.equals("exit")) {
+            }else if (input.startsWith("change password ")) {
+            User current = repo.findUser(activeUser[0]);
+            if (current != null) {
+                ChangePasswordCommand.execute(input.substring(16), current, repo);
+            } else {
+                 System.out.println("No active user found.");
+            }
+            }else if (input.startsWith("reset password ")) {
+            User current = repo.findUser(activeUser[0]);
+            if (current != null) {
+            ResetPasswordCommand.execute(input.substring(15), current, repo);
+            }
+            }
+
+             else if (input.equals("exit")) {
                 System.out.println("Goodbye.");
                 return;
             } else {

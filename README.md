@@ -16,3 +16,9 @@ Command-line interface system built in Java with Oracle DB integration. Supports
 2. Java for developing backend
 # IDE USED
 1. IntellijIDEA
+# TASK ASSIGNMENTS
+1. BIMENYIMANA Jackson assigned to user handling
+2. UMUTONI Angella assigned to help
+3. IMENA Kenny assigned to system
+4. UWIZEYIMANA Laetitia assigned to file operation
+5. TUYISENGE S Sebarera Patrick assigned to monitoring and diagnostics
