@@ -1,10 +1,10 @@
 package user;
 
-import java.util.Map;
+import db.UserRepository;
 
 public class SwitchUserCommand {
-    public static void execute(String username, Map<String, String> users, String[] activeUser) {
-        if (users.containsKey(username)) {
+    public static void execute(String username, UserRepository repo, String[] activeUser) {
+        if (repo.findUser(username) != null) {
             activeUser[0] = username;
             System.out.println("Switched to user: " + username);
         } else {
