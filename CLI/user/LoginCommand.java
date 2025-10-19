@@ -1,13 +1,21 @@
 package user;
 
-import java.util.Map;
+import db.UserRepository;
 
 public class LoginCommand {
-    public static void execute(String credentials, Map<String, String> users, String[] activeUser) {
+    public static void execute(String credentials, UserRepository repo, String[] activeUser) {
         String[] creds = credentials.split(":");
-        if (creds.length == 2 && users.containsKey(creds[0]) && users.get(creds[0]).equals(creds[1])) {
-            activeUser[0] = creds[0];
-            System.out.println("Logged in as " + activeUser[0]);
+        if (creds.length != 2) {
+            System.out.println("Use format: login username:password");
+            return;
+        }
+
+        String username = creds[0];
+        String password = creds[1];
+
+        if (repo.validateLogin(username, password)) {
+            activeUser[0] = username;
+            System.out.println("Logged in as " + username);
         } else {
             System.out.println("Invalid credentials.");
         }
