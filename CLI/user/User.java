@@ -10,6 +10,7 @@ public class User {
     private String status;
     private Date createdAt;
 
+    // Full constructor
     public User(int userId, String username, String passwordHash, String role, String status, Date createdAt) {
         this.userId = userId;
         this.username = username;
@@ -19,8 +20,25 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    // Partial constructor for lightweight usage
+    public User(String username, String passwordHash, String role) {
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.role = role;
+        this.status = "active";
+        this.createdAt = new Date(); // default to now
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
     public String getUsername() {
         return username;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
     public boolean checkPassword(String inputPassword) {
@@ -33,5 +51,9 @@ public class User {
 
     public String getStatus() {
         return status;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
     }
 }
