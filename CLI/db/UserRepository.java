@@ -1,11 +1,10 @@
-
 package db;
 
 import user.User;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import db.DBConnection;
 
 public class UserRepository {
 
@@ -17,9 +16,12 @@ public class UserRepository {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return new User(
+                    rs.getInt("user_id"),
                     rs.getString("username"),
                     rs.getString("password_hash"),
-                    rs.getString("role")
+                    rs.getString("role"),
+                    rs.getString("status"),
+                    rs.getTimestamp("created_at")
                 );
             }
         } catch (SQLException e) {
@@ -28,19 +30,20 @@ public class UserRepository {
         return null;
     }
 
-  public boolean createUser(String username, String passwordHash, String role) {
-    String query = "INSERT INTO users (user_id, username, password_hash, role) VALUES (users_seq.NEXTVAL, ?, ?, ?)";
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(query)) {
-        stmt.setString(1, username);
-        stmt.setString(2, passwordHash);
-        stmt.setString(3, role);
-        return stmt.executeUpdate() > 0;
-    } catch (SQLException e) {
-        System.err.println("Error creating user: " + e.getMessage());
+    public boolean createUser(String username, String passwordHash, String role) {
+        String query = "INSERT INTO users (user_id, username, password_hash, role, status, created_at) " +
+                       "VALUES (users_seq.NEXTVAL, ?, ?, ?, 'active', CURRENT_TIMESTAMP)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            stmt.setString(2, passwordHash);
+            stmt.setString(3, role);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error creating user: " + e.getMessage());
+        }
+        return false;
     }
-    return false;
-}
 
     public boolean deleteUser(String username) {
         String query = "DELETE FROM users WHERE username = ?";
@@ -62,9 +65,12 @@ public class UserRepository {
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 users.add(new User(
+                    rs.getInt("user_id"),
                     rs.getString("username"),
                     rs.getString("password_hash"),
-                    rs.getString("role")
+                    rs.getString("role"),
+                    rs.getString("status"),
+                    rs.getTimestamp("created_at")
                 ));
             }
         } catch (SQLException e) {
@@ -86,16 +92,44 @@ public class UserRepository {
         }
         return false;
     }
+
     public boolean updatePassword(String username, String newPasswordHash) {
-    String query = "UPDATE users SET password_hash = ? WHERE username = ?";
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(query)) {
-        stmt.setString(1, newPasswordHash);
-        stmt.setString(2, username);
-        return stmt.executeUpdate() > 0;
-    } catch (SQLException e) {
-        System.err.println("Error updating password: " + e.getMessage());
+        String query = "UPDATE users SET password_hash = ? WHERE username = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, newPasswordHash);
+            stmt.setString(2, username);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error updating password: " + e.getMessage());
+        }
+        return false;
     }
-    return false;
-}
+
+    public boolean promoteUserToAdmin(String username) {
+        String query = "UPDATE users SET role = 'admin' WHERE username = ? AND role != 'admin'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, username);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error promoting user: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean updateUser(User user) {
+        String query = "UPDATE users SET password_hash = ?, role = ?, status = ? WHERE username = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, user.getPasswordHash());
+            stmt.setString(2, user.getRole());
+            stmt.setString(3, user.getStatus());
+            stmt.setString(4, user.getUsername());
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error updating user: " + e.getMessage());
+        }
+        return false;
+    }
 }
