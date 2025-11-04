@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import db.UserRepository;
 import user.*;
+import monitor.*;
 
 
 public class Main {
@@ -136,7 +137,8 @@ public class Main {
 
 
         // Monitoring & Diagnostics by Patrick
-
+        MonitoringManager manager = new MonitoringManager();
+        //manager.startMonitoring();
 
 
 
