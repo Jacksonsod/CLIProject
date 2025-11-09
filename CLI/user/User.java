@@ -19,19 +19,22 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public String getUsername() {
-        return username;
+    public User(String username, String passwordHash, String role) {
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.role = role;
+        this.status = "active";
+        this.createdAt = new Date();
     }
 
-    public boolean checkPassword(String inputPassword) {
-        return passwordHash.equals(inputPassword); // Replace with hash comparison later
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public String getStatus() {
-        return status;
-    }
+    public int getUserId() { return userId; }
+    public String getUsername() { return username; }
+    public String getPasswordHash() { return passwordHash; }
+    public void setPassword(String newPasswordHash) { this.passwordHash = newPasswordHash; }
+    public boolean checkPassword(String inputPassword) { return passwordHash.equals(inputPassword); }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    public Date getCreatedAt() { return createdAt; }
 }
