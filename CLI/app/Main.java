@@ -8,9 +8,10 @@ import java.util.List;
 import db.*;
 import user.*;
 import monitor.*;
+import system.*;
 
 public class Main extends JFrame {
-    private static final String[] activeUser = { null };
+    private static final String[] activeUser = {null};
     private static final UserRepository repo = new UserRepository();
 
     private JTextArea terminal;
@@ -19,10 +20,11 @@ public class Main extends JFrame {
 
     private final List<String> commandHistory = new ArrayList<>();
     private int historyIndex = -1;
+    private final long appStartTime;
 
     public Main() {
         super("CLI User Manager");
-
+        appStartTime = System.currentTimeMillis();
         CommandSeeder.seedCommands();
 
         terminal = new JTextArea();
@@ -155,7 +157,10 @@ public class Main extends JFrame {
                 String[] parts = input.trim().split("\\s+");
                 Integer n = null;
                 if (parts.length > 1) {
-                    try { n = Integer.parseInt(parts[1]); } catch (NumberFormatException ignored) {}
+                    try {
+                        n = Integer.parseInt(parts[1]);
+                    } catch (NumberFormatException ignored) {
+                    }
                 }
                 LogCommand.execute(this, n);
                 return;
@@ -164,6 +169,27 @@ public class Main extends JFrame {
                 return;
             } else if (lower.equals("memory")) {
                 MemoryCommand.execute(this);
+                return;
+            }
+
+            // System commands
+            if (lower.equals("clear")) {
+                new ClearCommand().execute(this);
+                return;
+            } else if (lower.equals("date")) {
+                new DateCommand().execute(this);
+                return;
+            } else if (lower.equals("time")) {
+                new TimeCommand().execute(this);
+                return;
+            } else if (lower.equals("uptime")) {
+                new UptimeCommand(appStartTime).execute(this);
+                return;
+            } else if (lower.equals("restart")) {
+                new RestartCommand().execute(this);
+                return;
+            } else if (lower.equals("shutdown")) {
+                new ShutdownCommand().execute(repo, this);
                 return;
             }
 
@@ -243,6 +269,16 @@ public class Main extends JFrame {
         terminal.append(message + "\n");
         terminal.setCaretPosition(terminal.getDocument().getLength());
         ActivityLogger.getInstance().log(message);
+    }
+
+    // Clears the terminal and resets the prompt
+    public void clearScreen() {
+        // Remove all content
+        terminal.setText("");
+        // Reprint prompt and reset caret/prompt position
+        terminal.append(prompt);
+        terminal.setCaretPosition(terminal.getDocument().getLength());
+        promptPosition = terminal.getDocument().getLength();
     }
 
     public static void main(String[] args) {
