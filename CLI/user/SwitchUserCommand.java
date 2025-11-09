@@ -1,14 +1,16 @@
 package user;
 
 import db.UserRepository;
+import app.Main;
 
 public class SwitchUserCommand {
-    public static void execute(String username, UserRepository repo, String[] activeUser) {
-        if (repo.findUser(username) != null) {
-            activeUser[0] = username;
-            System.out.println("Switched to user: " + username);
+    public static void execute(String input, UserRepository repo, String[] activeUser, Main ui) {
+        User user = repo.findUser(input);
+        if (user == null) {
+            ui.appendOutput("User not found.");
         } else {
-            System.out.println("User not found.");
+            activeUser[0] = user.getUsername();
+            ui.appendOutput("Switched to user: " + user.getUsername());
         }
     }
 }
