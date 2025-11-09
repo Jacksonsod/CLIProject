@@ -9,6 +9,7 @@ import db.*;
 import user.*;
 import monitor.*;
 import system.*;
+import fileops.*;
 
 public class Main extends JFrame {
     private static final String[] activeUser = {null};
@@ -235,7 +236,13 @@ public class Main extends JFrame {
                 if (current != null) {
                     ResetPasswordCommand.execute(input.substring(15), current, repo, this);
                 }
-            } else if (lower.equals("exit")) {
+            }else if (lower.startsWith("create folder ")) {
+                String folderName = input.substring(14).trim();
+                CreateFolderCommand.execute(folderName, activeUser[0], this);
+
+
+            }
+            else if (lower.equals("exit")) {
                 appendOutput("Goodbye.");
                 System.exit(0);
             } else {
