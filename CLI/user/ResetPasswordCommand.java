@@ -1,29 +1,31 @@
-
 package user;
 
 import db.UserRepository;
+import app.Main;
 
 public class ResetPasswordCommand {
-    public static void execute(String input, User currentUser, UserRepository repo) {
-        if (!currentUser.getRole().equals("admin")) {
-            System.out.println("Only admins can reset passwords.");
+    public static void execute(String input, User current, UserRepository repo, Main ui) {
+        if (!current.getRole().equals("admin")) {
+            ui.appendOutput("Only admin can reset passwords.");
             return;
         }
 
         String[] parts = input.split(":");
         if (parts.length != 2) {
-            System.out.println("Use format: reset password username:newPassword");
+            ui.appendOutput("Use format: reset password username:newpass");
             return;
         }
 
-        String targetUser = parts[0];
-        String newPassword = parts[1];
+        String username = parts[0];
+        String newPass = parts[1];
 
-        boolean success = repo.updatePassword(targetUser, newPassword);
-        if (success) {
-            System.out.println("Password reset for user: " + targetUser);
+        User user = repo.findUser(username);
+        if (user == null) {
+            ui.appendOutput("User not found.");
         } else {
-            System.out.println("Password reset failed.");
+            user.setPassword(newPass);
+            repo.updateUser(user);
+            ui.appendOutput("Password reset for user: " + username);
         }
     }
 }
