@@ -7,12 +7,13 @@ import user.User;
 
 public class UserRepository {
 
-    public boolean createUser(String username, String password, String role) {
+    // Assumes password is already hashed before calling
+    public boolean createUser(String username, String hashedPassword, String role) {
         String sql = "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, username);
-            stmt.setString(2, password); // Consider hashing later
+            stmt.setString(2, hashedPassword);
             stmt.setString(3, role);
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {

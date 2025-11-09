@@ -12,12 +12,13 @@ public class CreateUserCommand {
         }
 
         String username = creds[0];
-        String password = creds[1];
+        String rawPassword = creds[1];
+        String hashedPassword = PasswordUtil.hash(rawPassword);
         String role = "user";
 
         if (repo.findUser(username) != null) {
             ui.appendOutput("User already exists.");
-        } else if (repo.createUser(username, password, role)) {
+        } else if (repo.createUser(username, hashedPassword, role)) {
             ui.appendOutput("User created: " + username);
         } else {
             ui.appendOutput("User creation failed.");
