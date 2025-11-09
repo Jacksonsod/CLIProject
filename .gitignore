@@ -1,1 +1,3 @@
-/out/production/CLI
+/out/
+/*.log
+*.class
