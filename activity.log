@@ -45,3 +45,42 @@ Please create a user and log in.
 [2025-11-09 14:46:43] Folder created: data\testing
 [2025-11-09 14:46:43] 
 > 
+[2025-11-09 18:44:04] Booting CLI User Manager...
+Please create a user and log in.
+> 
+[2025-11-09 18:46:04] Booting CLI User Manager...
+Please create a user and log in.
+> 
+[2025-11-09 18:46:08] 
+[2025-11-09 18:46:08] Available commands: create user, login
+[2025-11-09 18:46:08] 
+> 
+[2025-11-09 18:46:20] 
+[2025-11-09 18:50:14] Booting CLI User Manager...
+Please create a user and log in.
+> 
+[2025-11-09 18:50:21] 
+[2025-11-09 18:50:26] User not found.
+[2025-11-09 18:50:26] 
+> 
+[2025-11-09 18:50:30] 
+[2025-11-09 18:50:42] Login successful.
+[2025-11-09 18:50:42] Welcome, jacksonb
+[2025-11-09 18:50:42] 
+> 
+[2025-11-09 18:50:48] 
+[2025-11-09 18:50:48] Current Date: 2025-11-09
+[2025-11-09 18:50:48] 
+> 
+[2025-11-09 18:51:02] 
+[2025-11-09 18:51:02] Registered Users:
+[2025-11-09 18:51:02] - jackson
+[2025-11-09 18:51:02] - jack
+[2025-11-09 18:51:02] - jacksonb
+[2025-11-09 18:51:02] - kenny
+[2025-11-09 18:51:02] 
+> 
+[2025-11-09 18:51:18] 
+[2025-11-09 18:51:18] Switched to user: jack
+[2025-11-09 18:51:18] 
+> 
