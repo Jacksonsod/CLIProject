@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import db.*;
 import user.*;
+import monitor.*;
 
 public class Main extends JFrame {
     private static final String[] activeUser = { null };
@@ -146,6 +147,26 @@ public class Main extends JFrame {
                 return;
             }
 
+            // Monitor commands (available whether logged in or not, except those that require session data)
+            if (lower.equals("history")) {
+                HistoryCommand.execute(commandHistory, this);
+                return;
+            } else if (lower.startsWith("log")) {
+                String[] parts = input.trim().split("\\s+");
+                Integer n = null;
+                if (parts.length > 1) {
+                    try { n = Integer.parseInt(parts[1]); } catch (NumberFormatException ignored) {}
+                }
+                LogCommand.execute(this, n);
+                return;
+            } else if (lower.equals("status")) {
+                StatusCommand.execute(activeUser[0], this);
+                return;
+            } else if (lower.equals("memory")) {
+                MemoryCommand.execute(this);
+                return;
+            }
+
             if (lower.equals("create user")) {
                 String[] creds = CreateUserDialog.promptForCredentials();
                 if (creds != null) {
@@ -221,6 +242,7 @@ public class Main extends JFrame {
     public void appendOutput(String message) {
         terminal.append(message + "\n");
         terminal.setCaretPosition(terminal.getDocument().getLength());
+        ActivityLogger.getInstance().log(message);
     }
 
     public static void main(String[] args) {

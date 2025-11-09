@@ -49,6 +49,12 @@ public class CommandSeeder {
             insertCommandIfMissing(conn, 15, "help", "Show help menu", 10, 6);
             insertCommandIfMissing(conn, 16, "remove file", "Remove a file from the system", 11, 3);
 
+            // Monitor commands (use object: system (6); action: list (3) as generic info retrieval)
+            insertCommandIfMissing(conn, 17, "history", "Show command history", 3, 6);
+            insertCommandIfMissing(conn, 18, "log", "View CLI logs", 3, 6);
+            insertCommandIfMissing(conn, 19, "status", "Show current session status", 3, 6);
+            insertCommandIfMissing(conn, 20, "memory", "Show JVM memory usage", 3, 6);
+
             System.out.println("Command seeding completed.");
 
         } catch (SQLException e) {
