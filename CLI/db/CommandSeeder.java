@@ -1,6 +1,9 @@
 package db;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class CommandSeeder {
 
@@ -55,7 +58,7 @@ public class CommandSeeder {
 
     private static void insertActionIfMissing(Connection conn, int id, String name, String desc) throws SQLException {
         if (!exists(conn, "command_actions", "action_name", name)) {
-            String sql = "INSERT INTO command_actions (action_id, action_name, description, created_at) VALUES (?, ?, ?, SYSDATE)";
+            String sql = "INSERT INTO command_actions (action_id, action_name, description, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, id);
                 stmt.setString(2, name);
@@ -67,7 +70,7 @@ public class CommandSeeder {
 
     private static void insertObjectIfMissing(Connection conn, int id, String name, String desc) throws SQLException {
         if (!exists(conn, "command_objects", "object_name", name)) {
-            String sql = "INSERT INTO command_objects (object_id, object_name, description, created_at) VALUES (?, ?, ?, SYSDATE)";
+            String sql = "INSERT INTO command_objects (object_id, object_name, description, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, id);
                 stmt.setString(2, name);
@@ -79,7 +82,7 @@ public class CommandSeeder {
 
     private static void insertCommandIfMissing(Connection conn, int id, String alias, String desc, int actionId, int objectId) throws SQLException {
         if (!exists(conn, "command_map", "command_alias", alias)) {
-            String sql = "INSERT INTO command_map (command_id, action_id, object_id, command_alias, description, created_at) VALUES (?, ?, ?, ?, ?, SYSDATE)";
+            String sql = "INSERT INTO command_map (command_id, action_id, object_id, command_alias, description, created_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, id);
                 stmt.setInt(2, actionId);
