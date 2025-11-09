@@ -1,4 +1,3 @@
-
 package user;
 
 import db.UserRepository;
@@ -13,14 +12,17 @@ public class LoginCommand {
         }
 
         String username = creds[0];
-        String password = creds[1];
+        String rawPassword = creds[1];
+        String hashedInput = PasswordUtil.hash(rawPassword); // Hash input
 
         User user = repo.findUser(username);
-        if (user == null || !user.getPasswordHash().equals(password)) {
-            ui.appendOutput("Invalid credentials.");
+        if (user == null) {
+            ui.appendOutput("User not found.");
+        } else if (!user.getPasswordHash().equals(hashedInput)) {
+            ui.appendOutput("Incorrect password.");
         } else {
             activeUser[0] = username;
-            ui.appendOutput("Logged in as " + username);
+            ui.appendOutput("Login successful.");
         }
     }
 }

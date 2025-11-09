@@ -3,6 +3,8 @@ package app;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 import db.*;
 import user.*;
 
@@ -13,6 +15,9 @@ public class Main extends JFrame {
     private JTextArea terminal;
     private String prompt = "> ";
     private int promptPosition;
+
+    private final List<String> commandHistory = new ArrayList<>();
+    private int historyIndex = -1;
 
     public Main() {
         super("CLI User Manager");
@@ -43,9 +48,27 @@ public class Main extends JFrame {
                     return;
                 }
 
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    e.consume();
-                    handleCommand();
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_ENTER -> {
+                        e.consume();
+                        handleCommand();
+                    }
+                    case KeyEvent.VK_UP -> {
+                        e.consume();
+                        if (historyIndex > 0) {
+                            historyIndex--;
+                            replaceCurrentLine(commandHistory.get(historyIndex));
+                        }
+                    }
+                    case KeyEvent.VK_DOWN -> {
+                        e.consume();
+                        if (historyIndex < commandHistory.size() - 1) {
+                            historyIndex++;
+                            replaceCurrentLine(commandHistory.get(historyIndex));
+                        } else {
+                            replaceCurrentLine("");
+                        }
+                    }
                 }
             }
         });
@@ -72,6 +95,12 @@ public class Main extends JFrame {
         String command = text.substring(promptPosition).trim();
 
         appendOutput("\n");
+
+        if (!command.isEmpty()) {
+            commandHistory.add(command);
+            historyIndex = commandHistory.size();
+        }
+
         processCommand(command);
         appendOutput("\n" + prompt);
         promptPosition = terminal.getDocument().getLength();
@@ -82,15 +111,30 @@ public class Main extends JFrame {
 
         try {
             if (activeUser[0] == null) {
-                if (lower.startsWith("create user ")) {
-                    CreateUserCommand.execute(input.substring(12), repo, this);
-                } else if (lower.startsWith("login ")) {
-                    LoginCommand.execute(input.substring(6), repo, activeUser, this);
+                if (lower.equals("create user")) {
+                    String[] creds = CreateUserDialog.promptForCredentials();
+                    if (creds != null) {
+                        String username = creds[0];
+                        String password = creds[1];
+                        CreateUserCommand.execute(username + ":" + password, repo, this);
+                    } else {
+                        appendOutput("User creation canceled.");
+                    }
+                } else if (lower.equals("login")) {
+                    String[] creds = LoginDialog.promptForCredentials();
+                    if (creds != null) {
+                        String username = creds[0];
+                        String password = creds[1];
+                        LoginCommand.execute(username + ":" + password, repo, activeUser, this);
+                        if (activeUser[0] != null) {
+                            appendOutput("Welcome, " + activeUser[0]);
+                            updateTitle();
+                        }
+                    } else {
+                        appendOutput("Login canceled.");
+                    }
                 } else {
-                    appendOutput("Available commands: create user username:password, login username:password");
-                }
-                if (activeUser[0] != null) {
-                    appendOutput("Welcome, " + activeUser[0]);
+                    appendOutput("Available commands: create user, login");
                 }
                 return;
             }
@@ -98,16 +142,32 @@ public class Main extends JFrame {
             if (lower.equals("logout")) {
                 LogoutCommand.execute(activeUser, this);
                 appendOutput("Session ended. Please log in again.");
+                updateTitle();
                 return;
             }
 
-            if (lower.startsWith("login ")) {
-                LoginCommand.execute(input.substring(6), repo, activeUser, this);
-                if (activeUser[0] != null) {
-                    appendOutput("Welcome back, " + activeUser[0]);
+            if (lower.equals("create user")) {
+                String[] creds = CreateUserDialog.promptForCredentials();
+                if (creds != null) {
+                    String username = creds[0];
+                    String password = creds[1];
+                    CreateUserCommand.execute(username + ":" + password, repo, this);
+                } else {
+                    appendOutput("User creation canceled.");
                 }
-            } else if (lower.startsWith("create user ")) {
-                CreateUserCommand.execute(input.substring(12), repo, this);
+            } else if (lower.equals("login")) {
+                String[] creds = LoginDialog.promptForCredentials();
+                if (creds != null) {
+                    String username = creds[0];
+                    String password = creds[1];
+                    LoginCommand.execute(username + ":" + password, repo, activeUser, this);
+                    if (activeUser[0] != null) {
+                        appendOutput("Welcome back, " + activeUser[0]);
+                        updateTitle();
+                    }
+                } else {
+                    appendOutput("Login canceled.");
+                }
             } else if (lower.startsWith("delete user ")) {
                 DeleteUserCommand.execute(input.substring(12), repo, activeUser, this);
             } else if (lower.equals("list users")) {
@@ -132,10 +192,29 @@ public class Main extends JFrame {
                 appendOutput("Goodbye.");
                 System.exit(0);
             } else {
-                appendOutput("Unknown command.\nTry: create user, delete user, list users, switch user, logout, exit");
+                appendOutput("Unknown command.\nTry: create user, login, delete user, list users, switch user, logout, exit");
             }
         } catch (Exception ex) {
             appendOutput("Error: " + ex.getMessage());
+        }
+    }
+
+    private void replaceCurrentLine(String newText) {
+        try {
+            int start = promptPosition;
+            int end = terminal.getDocument().getLength();
+            terminal.getDocument().remove(start, end - start);
+            terminal.getDocument().insertString(start, newText, null);
+        } catch (Exception ex) {
+            appendOutput("Error updating command line: " + ex.getMessage());
+        }
+    }
+
+    private void updateTitle() {
+        if (activeUser[0] != null) {
+            setTitle("CLI User Manager — " + activeUser[0]);
+        } else {
+            setTitle("CLI User Manager");
         }
     }
 
