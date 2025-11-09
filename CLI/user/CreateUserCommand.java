@@ -1,25 +1,27 @@
 package user;
 
 import db.UserRepository;
+import app.Main;
 
 public class CreateUserCommand {
-    public static void execute(String input, UserRepository repo) {
+    public static void execute(String input, UserRepository repo, Main ui) {
         String[] creds = input.split(":");
         if (creds.length != 2) {
-            System.out.println("Use format: create user username:password");
+            ui.appendOutput("Use format: create user username:password");
             return;
         }
 
         String username = creds[0];
-        String password = creds[1];
+        String rawPassword = creds[1];
+        String hashedPassword = PasswordUtil.hash(rawPassword);
         String role = "user";
 
         if (repo.findUser(username) != null) {
-            System.out.println("User already exists.");
-        } else if (repo.createUser(username, password, role)) {
-            System.out.println("User created: " + username);
+            ui.appendOutput("User already exists.");
+        } else if (repo.createUser(username, hashedPassword, role)) {
+            ui.appendOutput("User created: " + username);
         } else {
-            System.out.println("User creation failed.");
+            ui.appendOutput("User creation failed.");
         }
     }
 }

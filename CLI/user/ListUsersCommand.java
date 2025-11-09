@@ -1,19 +1,21 @@
+
 package user;
 
 import db.UserRepository;
+import app.Main;
 import java.util.List;
 
 public class ListUsersCommand {
-    public static void execute(UserRepository repo) {
+    public static void execute(UserRepository repo, Main ui) {
         List<User> users = repo.getAllUsers();
         if (users.isEmpty()) {
-            System.out.println("No users registered.");
+            ui.appendOutput("No users registered.");
             return;
         }
 
-        System.out.println("Registered Users:");
+        ui.appendOutput("Registered Users:");
         for (User u : users) {
-            System.out.println("- " + u.getUsername());
+            ui.appendOutput("- " + u.getUsername());
         }
     }
 }
