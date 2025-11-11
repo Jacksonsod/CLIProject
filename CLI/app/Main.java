@@ -242,6 +242,63 @@ public class Main extends JFrame {
 
 
             }
+            else if (lower.startsWith("delete folder ")) {
+                String folderName = input.substring(14).trim(); // same as before
+                DeleteFolderCommand.execute(folderName, activeUser[0], this);
+            }
+            else if (lower.startsWith("change folder ")) {
+                String folderName = input.substring(14).trim(); // same as CreateFolderCommand
+                ChangeFolderCommand.execute(folderName, activeUser[0], this);
+            } else if (lower.startsWith("list contents ")) {
+                String folderName = input.substring(14).trim(); // get folder name after "list contents "
+                ListContentsCommand.execute(folderName, activeUser[0], this);
+            }
+            else if (lower.startsWith("create file ")) {
+                String fileName = input.substring("create file ".length()).trim();
+                CreateFileCommand.execute(fileName, activeUser[0], this);
+            }
+            else if (lower.startsWith("delete file ")) {
+                String fileName = input.substring("delete file ".length()).trim();
+                DeleteFileCommand.execute(fileName, activeUser[0], this);
+            }
+            else if (lower.startsWith("rename folder ")) {
+                String[] parts = input.substring("rename folder ".length()).trim().split("\\s+");
+                if (parts.length < 2) {
+                    appendOutput("Usage: rename folder <oldName> <newName>");
+                } else {
+                    String oldName = parts[0];
+                    String newName = parts[1];
+                    RenameFolderCommand.execute(oldName, newName, activeUser[0], this);
+                }
+            }
+            else if (lower.startsWith("copy folder ")) {
+                String[] parts = input.substring("copy folder ".length()).trim().split("\\s+");
+                if (parts.length < 2) {
+                    appendOutput("Usage: copy folder <sourceName> <destName>");
+                } else {
+                    String sourceName = parts[0];
+                    String destName = parts[1];
+                    CopyFolderCommand.execute(sourceName, destName, activeUser[0], this);
+                }
+            }
+
+            else if (lower.startsWith("read file ")) {
+                String fileName = input.substring("read file ".length()).trim();
+                ReadFileCommand.execute(fileName, activeUser[0], this);
+            }
+            else if (lower.startsWith("write file ")) {
+                String[] parts = input.substring("write file ".length()).split(" ", 2);
+                if (parts.length < 2) {
+                    appendOutput("Usage: write file <fileName> <text>");
+                } else {
+                    String fileName = parts[0].trim();
+                    String content = parts[1].trim();
+                    WriteFileCommand.execute(fileName, content, activeUser[0], this);
+                }
+            }
+
+
+
             else if (lower.equals("exit")) {
                 appendOutput("Goodbye.");
                 System.exit(0);
