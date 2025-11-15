@@ -7,9 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import db.*;
 import user.*;
+import monitor.*;
+import system.*;
+import fileops.*;
 
 public class Main extends JFrame {
-    private static final String[] activeUser = { null };
+    private static final String[] activeUser = {null};
     private static final UserRepository repo = new UserRepository();
 
     private JTextArea terminal;
@@ -18,10 +21,11 @@ public class Main extends JFrame {
 
     private final List<String> commandHistory = new ArrayList<>();
     private int historyIndex = -1;
+    private final long appStartTime;
 
     public Main() {
         super("CLI User Manager");
-
+        appStartTime = System.currentTimeMillis();
         CommandSeeder.seedCommands();
 
         terminal = new JTextArea();
@@ -146,6 +150,50 @@ public class Main extends JFrame {
                 return;
             }
 
+            // Monitor commands (available whether logged in or not, except those that require session data)
+            if (lower.equals("history")) {
+                HistoryCommand.execute(commandHistory, this);
+                return;
+            } else if (lower.startsWith("log")) {
+                String[] parts = input.trim().split("\\s+");
+                Integer n = null;
+                if (parts.length > 1) {
+                    try {
+                        n = Integer.parseInt(parts[1]);
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
+                LogCommand.execute(this, n);
+                return;
+            } else if (lower.equals("status")) {
+                StatusCommand.execute(activeUser[0], this);
+                return;
+            } else if (lower.equals("memory")) {
+                MemoryCommand.execute(this);
+                return;
+            }
+
+            // System commands
+            if (lower.equals("clear")) {
+                new ClearCommand().execute(this);
+                return;
+            } else if (lower.equals("date")) {
+                new DateCommand().execute(this);
+                return;
+            } else if (lower.equals("time")) {
+                new TimeCommand().execute(this);
+                return;
+            } else if (lower.equals("uptime")) {
+                new UptimeCommand(appStartTime).execute(this);
+                return;
+            } else if (lower.equals("restart")) {
+                new RestartCommand().execute(this);
+                return;
+            } else if (lower.equals("shutdown")) {
+                new ShutdownCommand().execute(repo, this);
+                return;
+            }
+
             if (lower.equals("create user")) {
                 String[] creds = CreateUserDialog.promptForCredentials();
                 if (creds != null) {
@@ -188,7 +236,70 @@ public class Main extends JFrame {
                 if (current != null) {
                     ResetPasswordCommand.execute(input.substring(15), current, repo, this);
                 }
-            } else if (lower.equals("exit")) {
+            }else if (lower.startsWith("create folder ")) {
+                String folderName = input.substring(14).trim();
+                CreateFolderCommand.execute(folderName, activeUser[0], this);
+
+
+            }
+            else if (lower.startsWith("delete folder ")) {
+                String folderName = input.substring(14).trim(); // same as before
+                DeleteFolderCommand.execute(folderName, activeUser[0], this);
+            }
+            else if (lower.startsWith("change folder ")) {
+                String folderName = input.substring(14).trim(); // same as CreateFolderCommand
+                ChangeFolderCommand.execute(folderName, activeUser[0], this);
+            } else if (lower.startsWith("list contents ")) {
+                String folderName = input.substring(14).trim(); // get folder name after "list contents "
+                ListContentsCommand.execute(folderName, activeUser[0], this);
+            }
+            else if (lower.startsWith("create file ")) {
+                String fileName = input.substring("create file ".length()).trim();
+                CreateFileCommand.execute(fileName, activeUser[0], this);
+            }
+            else if (lower.startsWith("delete file ")) {
+                String fileName = input.substring("delete file ".length()).trim();
+                DeleteFileCommand.execute(fileName, activeUser[0], this);
+            }
+            else if (lower.startsWith("rename folder ")) {
+                String[] parts = input.substring("rename folder ".length()).trim().split("\\s+");
+                if (parts.length < 2) {
+                    appendOutput("Usage: rename folder <oldName> <newName>");
+                } else {
+                    String oldName = parts[0];
+                    String newName = parts[1];
+                    RenameFolderCommand.execute(oldName, newName, activeUser[0], this);
+                }
+            }
+            else if (lower.startsWith("copy folder ")) {
+                String[] parts = input.substring("copy folder ".length()).trim().split("\\s+");
+                if (parts.length < 2) {
+                    appendOutput("Usage: copy folder <sourceName> <destName>");
+                } else {
+                    String sourceName = parts[0];
+                    String destName = parts[1];
+                    CopyFolderCommand.execute(sourceName, destName, activeUser[0], this);
+                }
+            }
+
+            else if (lower.startsWith("read file ")) {
+                String fileName = input.substring("read file ".length()).trim();
+                ReadFileCommand.execute(fileName, activeUser[0], this);
+            }
+            else if (lower.startsWith("write file ")) {
+                String[] parts = input.substring("write file ".length()).split(" ", 2);
+                if (parts.length < 2) {
+                    appendOutput("Usage: write file <fileName> <text>");
+                } else {
+                    String fileName = parts[0].trim();
+                    String content = parts[1].trim();
+                    WriteFileCommand.execute(fileName, content, activeUser[0], this);
+                }
+            }
+
+
+
+            else if (lower.equals("exit")) {
                 appendOutput("Goodbye.");
                 System.exit(0);
             } else {
@@ -221,6 +332,17 @@ public class Main extends JFrame {
     public void appendOutput(String message) {
         terminal.append(message + "\n");
         terminal.setCaretPosition(terminal.getDocument().getLength());
+        ActivityLogger.getInstance().log(message);
+    }
+
+    // Clears the terminal and resets the prompt
+    public void clearScreen() {
+        // Remove all content
+        terminal.setText("");
+        // Reprint prompt and reset caret/prompt position
+        terminal.append(prompt);
+        terminal.setCaretPosition(terminal.getDocument().getLength());
+        promptPosition = terminal.getDocument().getLength();
     }
 
     public static void main(String[] args) {
