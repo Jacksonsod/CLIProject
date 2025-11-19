@@ -10,8 +10,15 @@ import user.*;
 import monitor.*;
 import system.*;
 import fileops.*;
+import java.net.InetAddress;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Main extends JFrame {
+
+
+
     private static final String[] activeUser = {null};
     private static final UserRepository repo = new UserRepository();
 
@@ -24,6 +31,8 @@ public class Main extends JFrame {
     private final long appStartTime;
 
     public Main() {
+
+
         super("CLI User Manager");
         appStartTime = System.currentTimeMillis();
         CommandSeeder.seedCommands();
@@ -345,7 +354,49 @@ public class Main extends JFrame {
         promptPosition = terminal.getDocument().getLength();
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(Main::new);
+    private static boolean isLanAvailable(String serverIp) {
+        try {
+            InetAddress inet = InetAddress.getByName(serverIp);
+            return inet.isReachable(3000); // timeout 3 seconds
+        } catch (Exception e) {
+            return false;
+        }
     }
+
+
+    public static void main(String[] args) {
+        // Ask user for server IP
+        String serverIp = JOptionPane.showInputDialog(
+                null,
+                "Enter the server IP to join LAN:",
+                "192.168.1.41"   // default value
+        );
+
+        if (serverIp == null || serverIp.trim().isEmpty()) {
+            System.out.println("No IP entered. Exiting...");
+            System.exit(0);
+        }
+
+        String dbUrl = "jdbc:mysql://" + serverIp + ":3306/commandline";
+        String dbUser = "root";
+        String dbPassword = ""; // root has no password
+
+        // Step 1: Check LAN connectivity
+        if (!isLanAvailable(serverIp)) {
+            JOptionPane.showMessageDialog(null,
+                    "Cannot reach server at " + serverIp + ". Please join the LAN first.");
+            System.exit(0);
+        }
+
+        // Step 2: Check database connectivity
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            System.out.println("Connected to LAN and database at " + serverIp);
+            SwingUtilities.invokeLater(Main::new); // Launch GUI
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Database not accessible at " + serverIp + ". Please join LAN first.");
+            System.exit(0);
+        }
+    }
+
 }
