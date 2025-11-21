@@ -1,0 +1,3 @@
+Main-Class: app.Main
+Class-Path: CLI/lib/mysql-connector-java-8.0.28.jar
+

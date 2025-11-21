@@ -10,8 +10,15 @@ import user.*;
 import monitor.*;
 import system.*;
 import fileops.*;
+import java.net.InetAddress;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Main extends JFrame {
+
+
+
     private static final String[] activeUser = {null};
     private static final UserRepository repo = new UserRepository();
 
@@ -24,6 +31,8 @@ public class Main extends JFrame {
     private final long appStartTime;
 
     public Main() {
+
+
         super("CLI User Manager");
         appStartTime = System.currentTimeMillis();
         CommandSeeder.seedCommands();
@@ -111,6 +120,58 @@ public class Main extends JFrame {
     }
 
     private void processCommand(String input) {
+        String trimmed = input.trim();
+        String[] parts = trimmed.split("\\s+", 2);
+        String cmd = parts[0].toLowerCase();
+        String args = parts.length > 1 ? " " + parts[1] : "";
+
+        // Short command aliases: first letter of each word (two-word commands)
+        // Map alias + optional arguments to full command string before processing.
+        switch (cmd) {
+            case "cu" -> { // create user
+                input = "create user";
+            }
+            case "du" -> { // delete user
+                input = "delete user" + args;
+            }
+            case "lu" -> { // list users
+                input = "list users";
+            }
+            case "su" -> { // switch user
+                input = "switch user" + args;
+            }
+            case "pu" -> { // promote user
+                input = "promote user" + args;
+            }
+            case "cp" -> { // change password
+                input = "change password" + args;
+            }
+            case "rp" -> { // reset password
+                input = "reset password" + args;
+            }
+            case "cf" -> { // create folder
+                input = "create folder" + args;
+            }
+            case "df" -> { // delete folder
+                input = "delete folder" + args;
+            }
+            case "lc" -> { // list contents
+                input = "list contents" + args;
+            }
+            case "cr" -> { // create file
+                input = "create file" + args;
+            }
+            case "dl" -> { // delete file
+                input = "delete file" + args;
+            }
+            case "rf" -> { // read file
+                input = "read file" + args;
+            }
+            case "wf" -> { // write file
+                input = "write file" + args;
+            }
+        }
+
         String lower = input.toLowerCase();
 
         try {
@@ -155,11 +216,11 @@ public class Main extends JFrame {
                 HistoryCommand.execute(commandHistory, this);
                 return;
             } else if (lower.startsWith("log")) {
-                String[] parts = input.trim().split("\\s+");
+                String[] logParts = input.trim().split("\\s+");
                 Integer n = null;
-                if (parts.length > 1) {
+                if (logParts.length > 1) {
                     try {
-                        n = Integer.parseInt(parts[1]);
+                        n = Integer.parseInt(logParts[1]);
                     } catch (NumberFormatException ignored) {
                     }
                 }
@@ -262,22 +323,22 @@ public class Main extends JFrame {
                 DeleteFileCommand.execute(fileName, activeUser[0], this);
             }
             else if (lower.startsWith("rename folder ")) {
-                String[] parts = input.substring("rename folder ".length()).trim().split("\\s+");
-                if (parts.length < 2) {
+                String[] renameParts = input.substring("rename folder ".length()).trim().split("\\s+");
+                if (renameParts.length < 2) {
                     appendOutput("Usage: rename folder <oldName> <newName>");
                 } else {
-                    String oldName = parts[0];
-                    String newName = parts[1];
+                    String oldName = renameParts[0];
+                    String newName = renameParts[1];
                     RenameFolderCommand.execute(oldName, newName, activeUser[0], this);
                 }
             }
             else if (lower.startsWith("copy folder ")) {
-                String[] parts = input.substring("copy folder ".length()).trim().split("\\s+");
-                if (parts.length < 2) {
+                String[] copyParts = input.substring("copy folder ".length()).trim().split("\\s+");
+                if (copyParts.length < 2) {
                     appendOutput("Usage: copy folder <sourceName> <destName>");
                 } else {
-                    String sourceName = parts[0];
-                    String destName = parts[1];
+                    String sourceName = copyParts[0];
+                    String destName = copyParts[1];
                     CopyFolderCommand.execute(sourceName, destName, activeUser[0], this);
                 }
             }
@@ -287,12 +348,12 @@ public class Main extends JFrame {
                 ReadFileCommand.execute(fileName, activeUser[0], this);
             }
             else if (lower.startsWith("write file ")) {
-                String[] parts = input.substring("write file ".length()).split(" ", 2);
-                if (parts.length < 2) {
+                String[] writeParts = input.substring("write file ".length()).split(" ", 2);
+                if (writeParts.length < 2) {
                     appendOutput("Usage: write file <fileName> <text>");
                 } else {
-                    String fileName = parts[0].trim();
-                    String content = parts[1].trim();
+                    String fileName = writeParts[0].trim();
+                    String content = writeParts[1].trim();
                     WriteFileCommand.execute(fileName, content, activeUser[0], this);
                 }
             }
@@ -345,7 +406,49 @@ public class Main extends JFrame {
         promptPosition = terminal.getDocument().getLength();
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(Main::new);
+    private static boolean isLanAvailable(String serverIp) {
+        try {
+            InetAddress inet = InetAddress.getByName(serverIp);
+            return inet.isReachable(3000); // timeout 3 seconds
+        } catch (Exception e) {
+            return false;
+        }
     }
+
+
+    public static void main(String[] args) {
+        // Ask user for server IP
+        String serverIp = JOptionPane.showInputDialog(
+                null,
+                "Enter the server IP to join LAN:",
+                "10.218.107.45"   // default value
+        );
+
+        if (serverIp == null || serverIp.trim().isEmpty()) {
+            System.out.println("No IP entered. Exiting...");
+            System.exit(0);
+        }
+
+        String dbUrl = "jdbc:mysql://" + serverIp + ":3306/commandline";
+        String dbUser = "root";
+        String dbPassword = ""; // root has no password
+
+        // Step 1: Check LAN connectivity
+        if (!isLanAvailable(serverIp)) {
+            JOptionPane.showMessageDialog(null,
+                    "Cannot reach server at " + serverIp + ". Please join the LAN first.");
+            System.exit(0);
+        }
+
+        // Step 2: Check database connectivity
+        try (Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            System.out.println("Connected to LAN and database at " + serverIp);
+            SwingUtilities.invokeLater(Main::new); // Launch GUI
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Database not accessible at " + serverIp + ". Please join LAN first.");
+            System.exit(0);
+        }
+    }
+
 }
