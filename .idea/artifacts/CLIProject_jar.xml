@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="CLIProject:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/CLIProject_jar</output-path>
+    <root id="archive" name="CLIProject.jar">
+      <element id="module-output" name="CLI" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Setups/mysql-connector-java-8.0.28.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
