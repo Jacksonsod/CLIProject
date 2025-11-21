@@ -1,3 +1,7 @@
 /out/
 /*.log
 *.class
+# Ignore build files
+/dist/
+/target/
+/*.exe
