@@ -1,6 +1,7 @@
 package user;
 
 import db.UserRepository;
+import db.UserLogRepository;
 import app.Main;
 
 public class LoginCommand {
@@ -18,11 +19,14 @@ public class LoginCommand {
         User user = repo.findUser(username);
         if (user == null) {
             ui.appendOutput("User not found.");
+            UserLogRepository.getInstance().logEvent(username, "User not found", "LOGIN_FAIL");
         } else if (!user.getPasswordHash().equals(hashedInput)) {
             ui.appendOutput("Incorrect password.");
+            UserLogRepository.getInstance().logEvent(username, "Incorrect password", "LOGIN_FAIL");
         } else {
             activeUser[0] = username;
             ui.appendOutput("Login successful.");
+            UserLogRepository.getInstance().logEvent(username, "Login successful", "LOGIN");
         }
     }
 }

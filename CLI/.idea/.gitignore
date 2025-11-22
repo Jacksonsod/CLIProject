@@ -4,4 +4,9 @@
 # Editor-based HTTP Client requests
 /httpRequests/
 ../../
+# Ignore build files
+/dist/
+/target/
+/*.exe
+
 

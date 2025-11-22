@@ -114,6 +114,8 @@ public class Main extends JFrame {
             historyIndex = commandHistory.size();
         }
 
+        CommandExecutionLogRepository.getInstance().logCommand(activeUser[0], command, null);
+
         processCommand(command);
         appendOutput("\n" + prompt);
         promptPosition = terminal.getDocument().getLength();

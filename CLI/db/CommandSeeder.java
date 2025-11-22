@@ -22,6 +22,13 @@ public class CommandSeeder {
             insertActionIfMissing(conn, 9, "change", "Change user password");
             insertActionIfMissing(conn, 10, "help", "Show help menu");
             insertActionIfMissing(conn, 11, "remove", "Remove an entity or item");
+            insertActionIfMissing(conn, 12, "clear", "Clear the terminal screen");
+            insertActionIfMissing(conn, 13, "date", "Show current date");
+            insertActionIfMissing(conn, 14, "time", "Show current time");
+            insertActionIfMissing(conn, 15, "uptime", "Show application uptime");
+            insertActionIfMissing(conn, 16, "restart", "Restart the application");
+            insertActionIfMissing(conn, 17, "shutdown", "Shutdown the application");
+            insertActionIfMissing(conn, 18, "exit", "Exit the application");
 
             // Insert objects
             insertObjectIfMissing(conn, 1, "user", "User account");
@@ -54,6 +61,15 @@ public class CommandSeeder {
             insertCommandIfMissing(conn, 18, "log", "View CLI logs", 3, 6);
             insertCommandIfMissing(conn, 19, "status", "Show current session status", 3, 6);
             insertCommandIfMissing(conn, 20, "memory", "Show JVM memory usage", 3, 6);
+
+            // System commands using system object (6)
+            insertCommandIfMissing(conn, 21, "clear", "Clear the terminal screen", 12, 6);
+            insertCommandIfMissing(conn, 22, "date", "Show current date", 13, 6);
+            insertCommandIfMissing(conn, 23, "time", "Show current time", 14, 6);
+            insertCommandIfMissing(conn, 24, "uptime", "Show application uptime", 15, 6);
+            insertCommandIfMissing(conn, 25, "restart", "Restart the application", 16, 6);
+            insertCommandIfMissing(conn, 26, "shutdown", "Shutdown the application", 17, 6);
+            insertCommandIfMissing(conn, 27, "exit", "Exit the application", 18, 6);
 
             System.out.println("Command seeding completed.");
 

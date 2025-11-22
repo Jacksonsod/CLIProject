@@ -1,6 +1,7 @@
 package user;
 
 import db.UserRepository;
+import db.UserLogRepository;
 import app.Main;
 
 public class CreateUserCommand {
@@ -20,6 +21,7 @@ public class CreateUserCommand {
             ui.appendOutput("User already exists.");
         } else if (repo.createUser(username, hashedPassword, role)) {
             ui.appendOutput("User created: " + username);
+            UserLogRepository.getInstance().logEvent(username, "User created", "CREATE_USER");
         } else {
             ui.appendOutput("User creation failed.");
         }
