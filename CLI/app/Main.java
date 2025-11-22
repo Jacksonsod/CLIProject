@@ -14,6 +14,7 @@ import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import help.*;
 
 public class Main extends JFrame {
 
