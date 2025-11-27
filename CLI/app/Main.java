@@ -255,6 +255,10 @@ public class Main extends JFrame {
                 new ShutdownCommand().execute(repo, this);
                 return;
             }
+            else if (lower.equals("help")) {
+                new HelpCommand().execute(this);
+                return;
+            }
 
             if (lower.equals("create user")) {
                 String[] creds = CreateUserDialog.promptForCredentials();
