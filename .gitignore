@@ -5,3 +5,5 @@
 /dist/
 /target/
 /*.exe
+CLI/.idea/ 
+CLIUserManager.jar 
