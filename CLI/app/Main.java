@@ -171,6 +171,12 @@ public class Main extends JFrame {
             case "wf" -> { // write file
                 input = "write file" + args;
             }
+            case "bk" -> { // backup
+                input = "backup" + args;
+            }
+            case "rs" -> { // restore
+                input = "restore" + args;
+            }
         }
 
         String lower = input.toLowerCase();
@@ -290,31 +296,21 @@ public class Main extends JFrame {
                 SwitchUserCommand.execute(input.substring(12), repo, activeUser, this);
             } else if (lower.startsWith("promote user ")) {
                 PromoteUserCommand.execute(input.substring(13), repo, activeUser, this);
+            } else if (lower.equals("backup")) {
+                BackupCommand.execute(repo, activeUser[0], this);
+            } else if (lower.equals("restore")) {
+                RestoreCommand.execute(repo, activeUser[0], this);
             } else if (lower.startsWith("change password ")) {
                 User current = repo.findUser(activeUser[0]);
                 if (current != null) {
                     ChangePasswordCommand.execute(input.substring(16), current, repo, this);
-                } else {
-                    appendOutput("No active user found.");
                 }
-            } else if (lower.startsWith("reset password ")) {
-                User current = repo.findUser(activeUser[0]);
-                if (current != null) {
-                    ResetPasswordCommand.execute(input.substring(15), current, repo, this);
-                }
-            }else if (lower.startsWith("create folder ")) {
-                String folderName = input.substring(14).trim();
+            } else if (lower.startsWith("create folder ")) {
+                String folderName = input.substring("create folder ".length()).trim();
                 CreateFolderCommand.execute(folderName, activeUser[0], this);
-
-
-            }
-            else if (lower.startsWith("delete folder ")) {
-                String folderName = input.substring(14).trim(); // same as before
+            } else if (lower.startsWith("delete folder ")) {
+                String folderName = input.substring("delete folder ".length()).trim();
                 DeleteFolderCommand.execute(folderName, activeUser[0], this);
-            }
-            else if (lower.startsWith("change folder ")) {
-                String folderName = input.substring(14).trim(); // same as CreateFolderCommand
-                ChangeFolderCommand.execute(folderName, activeUser[0], this);
             } else if (lower.startsWith("list contents ")) {
                 String folderName = input.substring(14).trim(); // get folder name after "list contents "
                 ListContentsCommand.execute(folderName, activeUser[0], this);

@@ -5,7 +5,8 @@ import app.Main;
 
 public class DeleteUserCommand {
     public static void execute(String input, UserRepository repo, String[] activeUser, Main ui) {
-        if (!activeUser[0].equals("admin")) {
+        User current = repo.findUser(activeUser[0]);
+        if (current == null || current.getRole() == null || !current.getRole().equalsIgnoreCase("admin")) {
             ui.appendOutput("Only admin can delete users.");
             return;
         }
