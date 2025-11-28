@@ -14,10 +14,13 @@ public class ChangePasswordCommand {
         String oldPass = parts[0];
         String newPass = parts[1];
 
-        if (!current.getPasswordHash().equals(oldPass)) {
+        String oldHash = PasswordUtil.hash(oldPass);
+        String newHash = PasswordUtil.hash(newPass);
+
+        if (!current.getPasswordHash().equals(oldHash)) {
             ui.appendOutput("Incorrect current password.");
         } else {
-            current.setPassword(newPass);
+            current.setPassword(newHash);
             repo.updateUser(current);
             ui.appendOutput("Password changed.");
         }

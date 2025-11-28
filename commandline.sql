@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 27, 2025 at 10:47 AM
+-- Generation Time: Nov 28, 2025 at 04:29 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -95,14 +95,12 @@ INSERT INTO `command_execution_log` (`log_id`, `user_id`, `command_id`, `input_a
 (14, NULL, NULL, 'lo', NULL, '2025-11-22 10:54:32'),
 (15, NULL, 6, 'login', NULL, '2025-11-22 10:54:35'),
 (16, NULL, 6, 'login', NULL, '2025-11-27 10:56:30'),
-(17, 2, NULL, 'df testalii', NULL, '2025-11-27 10:57:08'),
 (18, NULL, NULL, 'lgi', NULL, '2025-11-27 11:16:28'),
 (19, NULL, NULL, 'u', NULL, '2025-11-27 11:26:12'),
 (20, NULL, NULL, 'cu', NULL, '2025-11-27 11:26:16'),
 (21, NULL, NULL, 'cu', NULL, '2025-11-27 11:26:38'),
 (22, NULL, NULL, 'cu', NULL, '2025-11-27 11:26:49'),
-(23, NULL, 6, 'login', NULL, '2025-11-27 11:26:55'),
-(24, 6, NULL, 'log', NULL, '2025-11-27 11:27:10');
+(23, NULL, 6, 'login', NULL, '2025-11-27 11:26:55');
 
 -- --------------------------------------------------------
 
@@ -150,7 +148,14 @@ INSERT INTO `command_map` (`command_id`, `action_id`, `object_id`, `command_alia
 (24, 15, 6, 'uptime', 'Show application uptime', '2025-11-22 10:50:44'),
 (25, 16, 6, 'restart', 'Restart the application', '2025-11-22 10:50:44'),
 (26, 17, 6, 'shutdown', 'Shutdown the application', '2025-11-22 10:50:44'),
-(27, 18, 6, 'exit', 'Exit the application', '2025-11-22 10:50:44');
+(27, 18, 6, 'exit', 'Exit the application', '2025-11-22 10:50:44'),
+(28, 3, 2, 'list contents', 'List contents of a folder', '2025-11-28 16:46:03'),
+(29, 3, 3, 'read file', 'Read contents of a file', '2025-11-28 16:46:03'),
+(30, 9, 3, 'write file', 'Write text to a file', '2025-11-28 16:46:03'),
+(31, 9, 2, 'rename folder', 'Rename a folder', '2025-11-28 16:46:03'),
+(32, 1, 2, 'copy folder', 'Copy a folder', '2025-11-28 16:46:03'),
+(33, 1, 6, 'backup', 'Backup data and database', '2025-11-28 16:46:03'),
+(34, 9, 6, 'restore', 'Restore data from latest backup', '2025-11-28 16:46:03');
 
 -- --------------------------------------------------------
 
@@ -198,12 +203,17 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `password_hash`, `role`, `status`, `created_at`) VALUES
-(1, 'jackson', '123', 'user', 'active', '2025-11-09 11:34:02'),
-(2, 'jacksonb', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'user', 'active', '2025-11-21 09:39:57'),
+(1, 'jackson', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'admin', 'active', '2025-11-09 11:34:02'),
 (3, 'yves', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'user', 'active', '2025-11-21 12:10:18'),
 (4, 'edison', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'user', 'active', '2025-11-21 12:23:19'),
 (5, 'meek', '16a0a2e664cff4e61bb46f89adad749641cd4aa3ce384cc5bf0400137824b59a', 'user', 'active', '2025-11-22 10:35:41'),
-(6, 'shyaka', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'user', 'active', '2025-11-27 11:26:45');
+(7, 'letitia', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', 'user', 'active', '2025-11-28 12:58:45'),
+(8, 'patty', '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', 'user', 'active', '2025-11-28 16:22:29'),
+(9, 'angella', '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', 'user', 'active', '2025-11-28 16:36:59'),
+(10, 'leatitia', '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', 'user', 'active', '2025-11-28 16:41:05'),
+(11, 'kennysol', '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', 'user', 'active', '2025-11-28 16:51:12'),
+(12, 'pazzo', 'c1c224b03cd9bc7b6a86d77f5dace40191766c485cd55dc48caf9ac873335d6f', 'user', 'active', '2025-11-28 17:05:57'),
+(19, 'Adminu', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'admin', 'active', '2025-11-28 17:23:54');
 
 -- --------------------------------------------------------
 
@@ -226,10 +236,7 @@ CREATE TABLE `user_log` (
 INSERT INTO `user_log` (`log_id`, `user_id`, `event_detail`, `event_type`, `timestamp`) VALUES
 (1, 5, 'Login successful', 'LOGIN', '2025-11-22 10:42:24'),
 (2, 5, 'Logged out', 'LOGOUT', '2025-11-22 10:44:30'),
-(3, 5, 'Login successful', 'LOGIN', '2025-11-22 10:45:56'),
-(4, 2, 'Login successful', 'LOGIN', '2025-11-27 10:56:38'),
-(5, 6, 'User created', 'CREATE_USER', '2025-11-27 11:26:45'),
-(6, 6, 'Login successful', 'LOGIN', '2025-11-27 11:27:03');
+(3, 5, 'Login successful', 'LOGIN', '2025-11-22 10:45:56');
 
 --
 -- Indexes for dumped tables
@@ -300,7 +307,7 @@ ALTER TABLE `command_execution_log`
 -- AUTO_INCREMENT for table `command_map`
 --
 ALTER TABLE `command_map`
-  MODIFY `command_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `command_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `command_objects`
@@ -312,7 +319,7 @@ ALTER TABLE `command_objects`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `user_log`

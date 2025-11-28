@@ -23,7 +23,8 @@ public class ResetPasswordCommand {
         if (user == null) {
             ui.appendOutput("User not found.");
         } else {
-            user.setPassword(newPass);
+            String newHash = PasswordUtil.hash(newPass);
+            user.setPassword(newHash);
             repo.updateUser(user);
             ui.appendOutput("Password reset for user: " + username);
         }

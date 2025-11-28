@@ -1,0 +1,19 @@
+action_id,action_name,description,is_active,created_at
+1,create,Create a new entity,Y,2025-11-09T11:37:57
+2,delete,Delete an existing entity,Y,2025-11-09T11:37:57
+3,list,List entities,Y,2025-11-09T11:37:57
+4,switch,Switch active user,Y,2025-11-09T11:37:57
+5,promote,Promote user to admin,Y,2025-11-09T11:37:57
+6,login,Authenticate user,Y,2025-11-09T11:37:57
+7,logout,End session,Y,2025-11-09T11:37:57
+8,reset,Reset user password,Y,2025-11-09T11:37:57
+9,change,Change user password,Y,2025-11-09T11:37:57
+10,help,Show help menu,Y,2025-11-09T11:37:57
+11,remove,Remove an entity or item,Y,2025-11-09T11:37:57
+12,clear,Clear the terminal screen,Y,2025-11-22T10:50:44
+13,date,Show current date,Y,2025-11-22T10:50:44
+14,time,Show current time,Y,2025-11-22T10:50:44
+15,uptime,Show application uptime,Y,2025-11-22T10:50:44
+16,restart,Restart the application,Y,2025-11-22T10:50:44
+17,shutdown,Shutdown the application,Y,2025-11-22T10:50:44
+18,exit,Exit the application,Y,2025-11-22T10:50:44

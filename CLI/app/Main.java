@@ -144,6 +144,9 @@ public class Main extends JFrame {
             case "pu" -> { // promote user
                 input = "promote user" + args;
             }
+            case "ca" -> { // create admin
+                input = "create admin" + args;
+            }
             case "cp" -> { // change password
                 input = "change password" + args;
             }
@@ -192,6 +195,21 @@ public class Main extends JFrame {
                     } else {
                         appendOutput("User creation canceled.");
                     }
+                } else if (lower.equals("create admin")) {
+                    String[] creds = CreateAdminDialog.promptForAdminCredentials();
+                    if (creds != null) {
+                        String username = creds[0];
+                        String password = creds[1];
+                        String hashed = PasswordUtil.hash(password);
+                        boolean ok = repo.createUser(username, hashed, "admin");
+                        if (ok) {
+                            appendOutput("Admin user created: " + username);
+                        } else {
+                            appendOutput("Failed to create admin user. It may already exist.");
+                        }
+                    } else {
+                        appendOutput("Admin creation canceled.");
+                    }
                 } else if (lower.equals("login")) {
                     String[] creds = LoginDialog.promptForCredentials();
                     if (creds != null) {
@@ -206,7 +224,7 @@ public class Main extends JFrame {
                         appendOutput("Login canceled.");
                     }
                 } else {
-                    appendOutput("Available commands: create user, login");
+                    appendOutput("Available commands: create user, create admin, login");
                 }
                 return;
             }
@@ -274,6 +292,21 @@ public class Main extends JFrame {
                     CreateUserCommand.execute(username + ":" + password, repo, this);
                 } else {
                     appendOutput("User creation canceled.");
+                }
+            } else if (lower.equals("create admin")) {
+                String[] creds = CreateAdminDialog.promptForAdminCredentials();
+                if (creds != null) {
+                    String username = creds[0];
+                    String password = creds[1];
+                    String hashed = PasswordUtil.hash(password);
+                    boolean ok = repo.createUser(username, hashed, "admin");
+                    if (ok) {
+                        appendOutput("Admin user created: " + username);
+                    } else {
+                        appendOutput("Failed to create admin user. It may already exist.");
+                    }
+                } else {
+                    appendOutput("Admin creation canceled.");
                 }
             } else if (lower.equals("login")) {
                 String[] creds = LoginDialog.promptForCredentials();
@@ -416,13 +449,12 @@ public class Main extends JFrame {
         }
     }
 
-
     public static void main(String[] args) {
         // Ask user for server IP
         String serverIp = JOptionPane.showInputDialog(
                 null,
                 "Enter the server IP to join LAN:",
-                "10.218.107.45"   // default value
+                "10.233.202.45"
         );
 
         if (serverIp == null || serverIp.trim().isEmpty()) {
@@ -451,5 +483,4 @@ public class Main extends JFrame {
             System.exit(0);
         }
     }
-
 }

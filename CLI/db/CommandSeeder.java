@@ -19,7 +19,7 @@ public class CommandSeeder {
             insertActionIfMissing(conn, 6, "login", "Authenticate user");
             insertActionIfMissing(conn, 7, "logout", "End session");
             insertActionIfMissing(conn, 8, "reset", "Reset user password");
-            insertActionIfMissing(conn, 9, "change", "Change user password");
+            insertActionIfMissing(conn, 9, "change", "Change a value or state");
             insertActionIfMissing(conn, 10, "help", "Show help menu");
             insertActionIfMissing(conn, 11, "remove", "Remove an entity or item");
 
@@ -54,6 +54,25 @@ public class CommandSeeder {
             insertCommandIfMissing(conn, 18, "log", "View CLI logs", 3, 6);
             insertCommandIfMissing(conn, 19, "status", "Show current session status", 3, 6);
             insertCommandIfMissing(conn, 20, "memory", "Show JVM memory usage", 3, 6);
+
+            // Additional file/folder and system commands used in Main.processCommand
+            insertCommandIfMissingAutoId(conn, "list contents", "List contents of a folder", 3, 2);
+            insertCommandIfMissingAutoId(conn, "read file", "Read contents of a file", 3, 3);
+            insertCommandIfMissingAutoId(conn, "write file", "Write text to a file", 9, 3);
+            insertCommandIfMissingAutoId(conn, "rename folder", "Rename a folder", 9, 2);
+            insertCommandIfMissingAutoId(conn, "copy folder", "Copy a folder", 1, 2);
+
+            insertCommandIfMissingAutoId(conn, "clear", "Clear the CLI screen", 3, 6);
+            insertCommandIfMissingAutoId(conn, "date", "Show current date", 3, 6);
+            insertCommandIfMissingAutoId(conn, "time", "Show current system time", 3, 6);
+            insertCommandIfMissingAutoId(conn, "uptime", "Show how long CLI has been running", 3, 6);
+            insertCommandIfMissingAutoId(conn, "restart", "Restart the CLI session", 3, 6);
+            insertCommandIfMissingAutoId(conn, "shutdown", "Exit the CLI application", 2, 6);
+
+            // Reuse existing generic actions for backup/restore to avoid new action IDs
+            // Use action 'create' (1) for backup and 'change' (9) for restore on object 'system' (6)
+            insertCommandIfMissingAutoId(conn, "backup", "Backup data and database", 1, 6);
+            insertCommandIfMissingAutoId(conn, "restore", "Restore data from latest backup", 9, 6);
 
             System.out.println("Command seeding completed.");
 
@@ -98,6 +117,34 @@ public class CommandSeeder {
                 stmt.executeUpdate();
             }
         }
+    }
+
+    private static void insertCommandIfMissingAutoId(Connection conn, String alias, String desc, int actionId, int objectId) throws SQLException {
+        if (exists(conn, "command_map", "command_alias", alias)) {
+            return;
+        }
+
+        int nextId = getNextCommandId(conn);
+        String sql = "INSERT INTO command_map (command_id, action_id, object_id, command_alias, description, created_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, nextId);
+            stmt.setInt(2, actionId);
+            stmt.setInt(3, objectId);
+            stmt.setString(4, alias);
+            stmt.setString(5, desc);
+            stmt.executeUpdate();
+        }
+    }
+
+    private static int getNextCommandId(Connection conn) throws SQLException {
+        String sql = "SELECT COALESCE(MAX(command_id), 0) + 1 FROM command_map";
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 1;
     }
 
     private static boolean exists(Connection conn, String table, String column, String value) throws SQLException {

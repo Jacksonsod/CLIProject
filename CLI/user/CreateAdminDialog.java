@@ -3,9 +3,9 @@ package user;
 import javax.swing.*;
 import java.awt.*;
 
-public class CreateUserDialog {
+public class CreateAdminDialog {
 
-    public static String[] promptForCredentials() {
+    public static String[] promptForAdminCredentials() {
         JTextField usernameField = new JTextField(16);
         JPasswordField passwordField = new JPasswordField(16);
 
@@ -35,7 +35,7 @@ public class CreateUserDialog {
         // Header spanning two columns
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        JLabel header = new JLabel("Create New User");
+        JLabel header = new JLabel("Create Admin User");
         header.setFont(headerFont);
         header.setForeground(Color.GREEN);
         panel.add(header, gbc);
@@ -55,7 +55,6 @@ public class CreateUserDialog {
 
         gbc.gridx = 0;
         gbc.gridy++;
-
         gbc.anchor = GridBagConstraints.LINE_END;
         JLabel passLabel = new JLabel("Password:");
         passLabel.setFont(labelFont);
@@ -69,7 +68,7 @@ public class CreateUserDialog {
         int result = JOptionPane.showConfirmDialog(
                 null,
                 panel,
-                "Create New User",
+                "Create Admin User",
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE
         );

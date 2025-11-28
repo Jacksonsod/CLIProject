@@ -9,6 +9,7 @@ public class LoginDialog {
         JTextField usernameField = new JTextField(16);
         JPasswordField passwordField = new JPasswordField(16);
 
+        Font headerFont = new Font("SansSerif", Font.BOLD, 16);
         Font labelFont = new Font("SansSerif", Font.BOLD, 14);
         Font fieldFont = new Font("Monospaced", Font.PLAIN, 14);
 
@@ -22,13 +23,25 @@ public class LoginDialog {
         passwordField.setCaretColor(Color.GREEN);
 
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(16, 20, 16, 20));
         panel.setBackground(new Color(20, 20, 20));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(4, 4, 4, 4);
+        gbc.anchor = GridBagConstraints.LINE_END;
+
+        // Header spanning two columns
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        JLabel header = new JLabel("User Login");
+        header.setFont(headerFont);
+        header.setForeground(Color.GREEN);
+        panel.add(header, gbc);
+
+        gbc.gridy++;
+        gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.LINE_END;
 
         JLabel userLabel = new JLabel("Username:");
@@ -41,7 +54,8 @@ public class LoginDialog {
         panel.add(usernameField, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy++;
+
         gbc.anchor = GridBagConstraints.LINE_END;
         JLabel passLabel = new JLabel("Password:");
         passLabel.setFont(labelFont);

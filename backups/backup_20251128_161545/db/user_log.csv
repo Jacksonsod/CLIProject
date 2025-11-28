@@ -1,0 +1,5 @@
+log_id,user_id,event_detail,event_type,timestamp
+1,5,Login successful,LOGIN,2025-11-22T10:42:24
+2,5,Logged out,LOGOUT,2025-11-22T10:44:30
+3,5,Login successful,LOGIN,2025-11-22T10:45:56
+4,2,Login successful,LOGIN,2025-11-27T10:56:38
